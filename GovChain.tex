@@ -1,0 +1,84 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{GovChain: a blockchain based platform for transparent publishing of government data\\
+\thanks{Vial and Vrgo\v{c} were supported by the Nucleus Millennium Institute for Fundamentals of Data. Vrgo\v{c} is also supported by FONDECYT Grant Nr. 11160383.}
+}
+
+\author{\IEEEauthorblockN{Mart\'in Ugarte}
+\IEEEauthorblockA{\textit{Universit\'e Libre de Bruxelles} \\
+%\textit{name of organization (of Aff.)}\\
+%City, Country \\
+mugartec@ulb.ac.be}
+\and
+\IEEEauthorblockN{Francisco Vial}
+\IEEEauthorblockA{\textit{PUC Chile and IMFD Chile} \\
+%\textit{name of organization (of Aff.)}\\
+%City, Country \\
+fvial@uc.cl}
+\and
+\IEEEauthorblockN{Domagoj Vrgo\v{c} }
+\IEEEauthorblockA{\textit{PUC Chile and IMFD Chile} \\
+%\textit{name of organization (of Aff.)}\\
+%City, Country \\
+dvrgoc@ing.puc.cl}
+}
+
+
+
+\maketitle
+
+\begin{abstract}
+This document is a model and instructions for \LaTeX.
+This and the IEEEtran.cls file define the components of your paper [title, text, heads, etc.]. *CRITICAL: Do Not Use Symbols, Special Characters, Footnotes, 
+or Math in Paper Title or Abstract.
+\end{abstract}
+
+\begin{IEEEkeywords}
+blockchain, government data, transparency
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+Explain the setting and the objective of the platform.
+
+List technical issues and explain how we propose to tackle them (sections below) -- this is what the paper is about.
+
+\begin{itemize}
+\item {\it Credibility.} The mistrust of the general public is not solved by simply publishing the data on a (centralized) blockchain. Namely, the publisher can change the data, recompute the blockchain, and upload it again.
+\item {\it Persistence.} By its nature, the records that the government keeps are often updated to fix typos or reflect new findings. On the other hand, the data on a blockchain is immutable once published.
+\item {\it Erasing documents.} Since the volume of data that the government publishes is large, it can be difficult to locate a specific document, thus making it easy for the government to make this document disappear.
+\item {\it "Clairvoyance attacks".} If sensitive data is published only through hashes, it might be possible for a misbehaving government agent to publish various versions of a document in the same block, and in the case of a dispute reveal only the one suiting him best.
+\item {\it Infrastructure issues.} Finally, we have to address the way that government data is created and stored, and the way that particular hash functions can be made vulnerable is not used properly. 
+\end{itemize}
+
+\section{A toy solution}
+Just the blockchain, not published on Ethereum
+
+\section{Technical issues and how to address them}
+
+\subsection{Using an established blockchain to achieve credibility.}
+
+\subsection{Allowing the data to be updated.}
+
+\subsection{Impossible to erase documents.}
+
+\subsection{Sensitive data and clairvoyance attacks.}
+
+\subsection{Formatting and hash function issues.}
+
+Bla
+
+\section{Potential impact and future directions}
+
+\end{document}
