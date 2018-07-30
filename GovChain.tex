@@ -39,9 +39,9 @@ dvrgoc@ing.puc.cl}
 \maketitle
 
 \begin{abstract}
-This document is a model and instructions for \LaTeX.
-This and the IEEEtran.cls file define the components of your paper [title, text, heads, etc.]. *CRITICAL: Do Not Use Symbols, Special Characters, Footnotes, 
-or Math in Paper Title or Abstract.
+Open government data is a valid effort on the part of leading world governments to make the democratic process more transparent. However, the sheer volume of the data makes it infeasible for a member of the general public to guard this information in order to assure that it is not manipulated by a malignant agent, or by the government itself.
+
+In this short report we describe the main ideas behind a platform that enables government data to be verifiably secure and immutable. We start with a simple hash-list based structure to ensure immutability, peg its security to that of an existing blockchain enabling smart contracts, and then dwell into more delicate issues of how to deal with updating the government records, manage sensitive or secret data, and assure a simple way for a member of the general public to verify a history of a specific document.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -49,36 +49,18 @@ blockchain, government data, transparency
 \end{IEEEkeywords}
 
 \section{Introduction}
+\input{intro}
 
-Explain the setting and the objective of the platform.
-
-List technical issues and explain how we propose to tackle them (sections below) -- this is what the paper is about.
-
-\begin{itemize}
-\item {\it Credibility.} The mistrust of the general public is not solved by simply publishing the data on a (centralized) blockchain. Namely, the publisher can change the data, recompute the blockchain, and upload it again.
-\item {\it Persistence.} By its nature, the records that the government keeps are often updated to fix typos or reflect new findings. On the other hand, the data on a blockchain is immutable once published.
-\item {\it Erasing documents.} Since the volume of data that the government publishes is large, it can be difficult to locate a specific document, thus making it easy for the government to make this document disappear.
-\item {\it "Clairvoyance attacks".} If sensitive data is published only through hashes, it might be possible for a misbehaving government agent to publish various versions of a document in the same block, and in the case of a dispute reveal only the one suiting him best.
-\item {\it Infrastructure issues.} Finally, we have to address the way that government data is created and stored, and the way that particular hash functions can be made vulnerable is not used properly. 
-\end{itemize}
 
 \section{A toy solution}
-Just the blockchain, not published on Ethereum
+\input{basic_solution}
+
 
 \section{Technical issues and how to address them}
+\input{technical_part}
 
-\subsection{Using an established blockchain to achieve credibility.}
-
-\subsection{Allowing the data to be updated.}
-
-\subsection{Impossible to erase documents.}
-
-\subsection{Sensitive data and clairvoyance attacks.}
-
-\subsection{Formatting and hash function issues.}
-
-Bla
 
 \section{Potential impact and future directions}
+\input{future}
 
 \end{document}
