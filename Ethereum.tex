@@ -6,3 +6,6 @@ The solution to this problem is quite simple: publish the Merkle root (together 
 This amounts to the most lightweight solution proposed in Section \ref{sec:basic}, where only the root is guarded. While this does not allow us to verify which particular document (if any) was modified, it does allow us to check whether a day's data was manipulated. The restriction that a single transaction is published per day is there to ensure that  the government commits to a particular view of the data for a single day. This way, it is straightforward to locate the entire history on the blockchain by looking for transactions corresponding to the government's public key, and guarding the hash values these transactions commit to. Notice that this solution is pretty lightweight for the blockchain it is published on since it commits a single transaction per day, and can also be implemented in a fairly economical way.
 
 This can be further implemented using a smart contract ME IMAGINO QUE SI??? ESCRIBAN DETALLES DE STEALA HASH AQUI.
+
+
+IF MONITORING ORGANIZATIONS ARE WELL ESTABLISHED MAYBE MOVE TO A N OUT OF M SIGNATURE TO COMMIT/OR AN ADDITIONAL TRANSACTION THEY PUBLISH WITH N OUT OF M SIGNATURES TO VERIFY THE DAY'S DATA?
