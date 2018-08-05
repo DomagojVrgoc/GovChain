@@ -115,13 +115,13 @@ It is possible to do better by utilizing the same idea that Bitcoin uses to stor
 
 \usetikzlibrary{shapes}
 \node[state] (x1) {$x_1$};
-\node[state] (x2) [right = 2.5cm of x1]{$x_2$};
+\node[state] (x2) [right = 2.7cm of x1]{$x_2$};
 \node[state] (x3) [right = 2.5cm of x2]{$x_3$};
 \node (etc) [right = 1.8cm of x3]{...};
 
 
 \node[state] (r1) [below =of x1]{\scriptsize$\mathit{MR}_1$};
-\node[state] (r2) [right = 2.5 cm of r1]{\scriptsize$\mathit{MR}_2$};
+\node[state] (r2) [right = 2.7 cm of r1]{\scriptsize$\mathit{MR}_2$};
 \node[state] (r3) [right = 2.5cm of r2]{\scriptsize$\mathit{MR}_3$};
 
 % First childs
@@ -152,8 +152,12 @@ It is possible to do better by utilizing the same idea that Bitcoin uses to stor
 \node[substate] (c321) [below left  = 0.6 and 0.2 of c32]{};
 \node[substate] (c322) [below right = 0.6 and 0.2 of c32]{};
 
-\node (etc11) [below = 0.9 of c11]{$\vdots$};
-\node (etc12) [below = 0.9 of c12]{$\vdots$};
+\node (etc111) [below = 0.3 of c111]{$\vdots$};
+\node (etc112) [below = 0.3 of c112]{$\vdots$};
+
+\node (etc121) [below = 0.3 of c121]{$\vdots$};
+\node (etc122) [below = 0.3 of c122]{$\vdots$};
+
 \node (etc21) [below = 0.9 of c21]{$\vdots$};
 \node (etc22) [below = 0.9 of c22]{$\vdots$};
 \node (etc31) [below = 0.9 of c31]{$\vdots$};
@@ -163,14 +167,16 @@ It is possible to do better by utilizing the same idea that Bitcoin uses to stor
 
 \node (ghost1) [below left = 1.2 and 0.3 of c11]{};
 \node (ghost2) [right = 1 of ghost1]{};
+\node (ghost3) [right = 1 of ghost2]{};
 
 
 
-\node (d1) [below left  = 0.8 and 0.25 of ghost1]{$d_1$};
+\node (d1) [below left  = 0.8 and 0.3 of ghost1]{$d_1$};
 \node (d2) [right = 0.5 of d1]{$d_2$};
 \node (d3) [below left  = 0.8 and 0.25 of ghost2]{$d_3$};
 \node (d4) [right = 0.5 of d3]{$d_4$};
 \node (d5) [right = 0.5 of d4]{...};
+\node (d6) [right = 0.5 of d5]{$d_k$};
 
 
 
@@ -210,11 +216,12 @@ It is possible to do better by utilizing the same idea that Bitcoin uses to stor
 \path (d2) edge node {} (ghost1);
 \path (d3) edge node {} (ghost2);
 \path (d4) edge node {} (ghost2);
+\path (d6) edge node {} (ghost3);
 
 
 
 \end{tikzpicture}
-\caption{Each day, a Merkle tree is constructed using that day's published documents $d_1,d_2,\dots$. The root of this tree is then hashed along with the hash value of the previous day, and the output value is broadcast along with the published documents. The result is a monitorable hash list $[x_1,x_2,\dots]$.}
+\caption{Each day, a Merkle tree is constructed using that day's published documents $d_1,d_2,\dots, d_k$. The root of this tree is then hashed along with the hash value of the previous day, and the output value is broadcast along with the published documents. The result is a monitorable hash list $[x_1,x_2,\dots]$.}
 
 \end{figure}
 
