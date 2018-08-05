@@ -17,7 +17,7 @@ The second primitive we recall is that of {\em cryptographic hash functions}. Ro
 \item {\em Second preimage resistance.} Given an input $x_1$, it is unfeasible to find a different input $x_2$ such that $h(x_1)=h(x_2)$.
 \item {\em Collision resistance.} It is infeasible to efficiently find two different inputs $x$ and $y$, such that $h(x)=h(y)$.
 \end{itemize}
-The output of a hash function is called simply a hash, or a hash value. Notice that the hiding property allows us to use $h(x)$ as an encrypted digest of our document $x$, since we can not reconstruct $x$ from $h(x)$ alone, and the value $h(x)$ is of fixed size, even for documents $x$ whose size is in TBs \francisco{This is true but lacks some important properties of a secure encryption, maybe change the word encryption here?}. On the other hand, collision resistance ensures that in order to prove to someone who has only $h(x)$ that we have $x$, we need to provide said $x$. To the date of this writing, there are a number of cryptographic hash functions in use. Most protocols adopt the NIST-approved Secure Hash Algorithms\cite{sha_standard}, which include SHA-256 and SHA-512 from the SHA-2 family, but other hash functions are considered equally secure and even more efficient. We highlight the BLAKE2 algorithm, released after the SHA-3 competition, which is more secure and faster than SHA-1 and SHA-2. For a more detailed treatment of cryptographic hash functions we refer the reader to \cite{sha_standard,aumasson,sha3zoo,bitcoinbook}. \francisco{Took the liberty of changing this paragraph (from ``To the day...'' on) and adding some references. Feel free to come back to previous versions}
+The output of a hash function is called simply a hash, or a hash value. Notice that the hiding property allows us to use $h(x)$ as an encrypted digest of our document $x$, since we can not reconstruct $x$ from $h(x)$ alone, and the value $h(x)$ is of fixed size, even for documents $x$ whose size is in TBs \francisco{This is true but lacks some important properties of a secure encryption, maybe change the word encryption here?}. On the other hand, collision resistance ensures that in order to prove to someone who has only $h(x)$ that we have $x$, we need to provide said $x$. There are a number of cryptographic hash functions currently in use. To the date of this writing, most protocols adopt the NIST-approved Secure Hash Algorithms\cite{sha_standard}, which include SHA-256 and SHA-512 from the SHA-2 family, but other hash functions are considered equally secure and even more efficient. We highlight the BLAKE2 algorithm, released after the SHA-3 competition, which is more secure and faster than SHA-1 and SHA-2. In fact, on most common hardware settings, it is the fastest secure hash function available today, becoming the most popular non-NIST-standard hash algorithm, supported by major cryptographic libraries. For a more detailed treatment of cryptographic hash functions we refer the reader to \cite{sha_standard,aumasson,sha3zoo,bitcoinbook}. \francisco{Took the liberty of changing this paragraph (from ``To the day...'' on) and adding some references. Feel free to come back to previous versions}
 
 \medskip
 \noindent{\bf Hash lists and Merkle trees.} 
@@ -101,7 +101,7 @@ A Merkle tree is a data structure that displays one hash value linked to a set o
 
 As explained above, anyone who witnesses the root of this Merkle tree (representing typically less than 100 bytes of information), can check whether the data corresponding to that single day was modified by downloading it in the sequence provided by the government, hashing it, and assembling a Merkle tree starting from these hashes. If the Merkle root published by the government does not match the one computed using this method, the verifier can know for certain that the data had been manipulated. It is assumed that the government makes it public knowledge which hashing algorithm and Merkle tree assembly they will be using.
 
-Notice that if we want to be able to detect which particular documents were modified, we would have to store the entire Merkle tree. The size of this will be in tens of megabytes for a tree coding one million documents when using SHA-256 as the hash function, so one might argue that even this is a reasonable amount of storage needed to pinpoint which particular data had been manipulated. One can further restrict the amount of needed storage by storing fewer layers of the Merkle tree (i.e if one trims the original leaves the size will roughly half), but also losing the granularity at which manipulations can be detected. For instance, if we store the tree up to the next to last level, we can check if one of the two adjacent documents in the list $d_1,\ldots ,d_n$ have been modified, but will not be able to say which one (Figure \ref{fig-trim}). Based on the volume of the published data, the government might also wish to publish these partial trees and sign them, in order to make it easier for a person to store this information.
+Notice that if we want to be able to detect which particular documents were modified, we would have to store the entire Merkle tree. The size of this will be in tens of megabytes for a tree coding one million documents when using SHA-256 as the hash function, so one might argue that even this is a reasonable amount of storage needed to pinpoint which particular data had been manipulated. One can further restrict the amount of needed storage by storing fewer layers of the Merkle tree (\ie if one trims the original leaves the size will roughly half), but also losing the granularity at which manipulations can be detected. For instance, if we store the tree up to the next to last level, we can check if one of the two adjacent documents in the list $d_1,\ldots ,d_n$ have been modified, but will not be able to say which one (Figure \ref{fig-trim}). Based on the volume of the published data, the government might also wish to publish these partial trees and sign them, in order to make it easier for a person to store this information.
 
 It is possible to do better by utilizing the same idea that Bitcoin uses to store its blocks \cite{whitepaper}, and encode and/or publish the hash of the previous day's data in the current day's digest. That is, we can create a hash list of the Merkle trees roots published each day. This would mean that storing one day's Merkle tree would not only assure that the data of that particular day can not be manipulated, but also, it would assure that the data in any of the days previous to this one could not be manipulated.  Since each tree would also contain the hash value of the previous day's digest, one can simply follow this chain day after day, and see if any of the hash values do not match. This simple concept is illustrated in Figure \ref{fig-merkle-chain}.
 
@@ -118,11 +118,6 @@ It is possible to do better by utilizing the same idea that Bitcoin uses to stor
 \node[state] (x2) [right = 2.5cm of x1]{$x_2$};
 \node[state] (x3) [right = 2.5cm of x2]{$x_3$};
 \node (etc) [right = 1.8cm of x3]{...};
-\node[style={ellipse}] (BC) [above =1.5cm  of x3] {Blockchain};
-
-\path (x1) edge[dotted, bend left=25] node {} (BC);
-\path (x2) edge[dotted, bend left=25] node {} (BC);
-\path (x3) edge[dotted, bend left=25] node {} (BC);
 
 
 \node[state] (r1) [below =of x1]{\scriptsize$\mathit{MR}_1$};
@@ -166,11 +161,16 @@ It is possible to do better by utilizing the same idea that Bitcoin uses to stor
 
 % Documents
 
-\node (d1) [below left  = 0.6 and 0.35 of etc11]{($d_1$,};
-\node (d2) [right = 0.5 of d1]{$d_2$,};
-\node (d3) [right = 0.5 of d2]{$d_3$,};
-\node (d4) [right = 0.5 of d3]{$d_4$,};
-\node (d5) [right = 0.5 of d4]{...)};
+\node (ghost1) [below left = 1.2 and 0.3 of c11]{};
+\node (ghost2) [right = 1 of ghost1]{};
+
+
+
+\node (d1) [below left  = 0.8 and 0.25 of ghost1]{$d_1$};
+\node (d2) [right = 0.5 of d1]{$d_2$};
+\node (d3) [below left  = 0.8 and 0.25 of ghost2]{$d_3$};
+\node (d4) [right = 0.5 of d3]{$d_4$};
+\node (d5) [right = 0.5 of d4]{...};
 
 
 
@@ -206,11 +206,15 @@ It is possible to do better by utilizing the same idea that Bitcoin uses to stor
 \path (c321) edge node {} (c32);
 \path (c322) edge node {} (c32);
 
+\path (d1) edge node {} (ghost1);
+\path (d2) edge node {} (ghost1);
+\path (d3) edge node {} (ghost2);
+\path (d4) edge node {} (ghost2);
 
 
 
 \end{tikzpicture}
-\caption{Each day, a Merkle tree is constructed using that day's published documents $d_1,d_2,\dots$. The root of this tree is then hashed with the hash value of the previous day. The resulting hash list $[x_1,x_2,\dots]$ is published element-wise in a well-established blockchain, and communicated along with the published documents. }
+\caption{Each day, a Merkle tree is constructed using that day's published documents $d_1,d_2,\dots$. The root of this tree is then hashed along with the hash value of the previous day, and the output value is broadcast along with the published documents. The result is a monitorable hash list $[x_1,x_2,\dots]$.}
 
 \end{figure}
 
@@ -219,7 +223,7 @@ It is possible to do better by utilizing the same idea that Bitcoin uses to stor
 \medskip
 \noindent{\bf Increasing credibility.} Of course, the solution we just proposed suffers from a similar issue as just publishing government data without the additional list of hashes and Merkle trees. Namely, if no one monitors and keeps track of the hash list or Merkle trees, the government is free to change the data, recompute the new Merkle trees and hash lists, and publish them as if they were the original ones. Similarly, if someone does possess a single document they wish to show was changed, even if they have the Merkle tree for that day, it would still be a dispute between the government (claiming that the data that is presently published is the correct one) and the document holder, so it could be difficult to decide whose claim is the actual truth.
 
-A rather simple solution to this problem is to involve non-profit organizations that wish to monitor the state of democracy into this process. More precisely, such organizations would guard some degree of the meta information published by the government, and periodically download the government's documents for some particular day, compute their hash values, and check that the Merkle tree obtained in this way matches the one published by the government. In particular, once that the government publicly announces its schema for publishing the data and additional security certificates (Merkle trees and hash lists) it would be simple to build an automated tool that helps organizations that wish to verify government's data to do so. Depending the organization's capacity, the tool could provide various levels of storage and verification requirements. In particular, the tool would support:
+A rather simple solution to this problem is to involve non-profit organizations that wish to monitor the state of democracy \francisco{transparency?} into this process. More precisely, such organizations would guard some degree of the meta information published by the government, and periodically download the government's documents for some particular day, compute their hash values, and check that the Merkle tree obtained in this way matches the one published by the government. In particular, once that the government publicly announces its schema for publishing the data and additional security certificates (Merkle trees and hash lists) it would be simple to build an automated tool that helps organizations that wish to verify government's data to do so. Depending the organization's capacity, the tool could provide various levels of storage and verification requirements. In particular, the tool would support:
 \begin{itemize}
 \item Storing only the Merkle tree's root, together with the hash of previous day's data. This is a very lightweight solution that can be supported even on mobile devices, as it requires storing one or two hash values per day (depending on the implementation). Using this value, a day's data can be verified for modifications at a later date by downloading and hashing it.
 \item Storing the entire Merkle tree, plus the hash of previous day's data. As explained above, this allows detecting modifications and tracing which particular documents suffered changes.

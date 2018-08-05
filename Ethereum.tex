@@ -7,8 +7,112 @@ The idea of having many different organizations backing up the Merkle trees publ
 The solution to this problem is quite simple: publish the Merkle root (together with the hash of the previous day's data) announced by the government on a well established public blokchain. In case that the blockhcain used is sufficiently economically powerful, as Bitcoin or Ethereum these days, it is highly unlikely that a malicious agent can subvert the entire blockchain to change the data published once. In this solution, the government, in addition to publishing the actual data, publishes a listing of the data, the corresponding Merkle tree, and also commit a {\em single} signed transaction to e.g. Ethereum's blockchain, containing the hash value of the Merkle root, hashed together with the hash value of previous day's data.
 
 This amounts to the most lightweight solution proposed in Section \ref{sec:basic}, where only the root is monitored. While this does not allow us to trace which particular document was modified, it does allow us to check whether a day's data was manipulated. The restriction that a single transaction is published per day is there to ensure that  the government commits to a particular view of the data for a single day. This way, it is straightforward to locate the entire history on the blockchain by looking for transactions corresponding to the government's public key, and guarding the hash values these transactions commit to. Notice that this solution is pretty lightweight for the blockchain it is published on since it commits a single transaction per day, and can also be implemented in a fairly economical way.
+\begin{figure}
+\label{fig-merkle-blockchain}
+\centering
+\begin {tikzpicture}[-latex ,auto ,node distance =1 cm and 2.5 cm ,on grid, semithick, state/.style ={ rectangle , draw, minimum width =0.9 cm}, substate/.style ={ rectangle , draw, minimum width =0.2 cm}]
+
+
+
+
+\usetikzlibrary{shapes}
+\node[state] (x1) {$x_1$};
+\node[state] (x2) [right = 2.5cm of x1]{$x_2$};
+\node[state] (x3) [right = 2.5cm of x2]{$x_3$};
+\node (etc) [right = 1.8cm of x3]{...};
+\node[style={ellipse}] (BC) [above =1.5cm  of x3] {Blockchain};
+
+\path (x1) edge[dotted, bend left=25] node {} (BC);
+\path (x2) edge[dotted, bend left=25] node {} (BC);
+\path (x3) edge[dotted, bend right=25] node {} (BC);
+
+
+\node[state] (r1) [below =of x1]{\scriptsize$\mathit{MR}_1$};
+\node[state] (r2) [right = 2.5 cm of r1]{\scriptsize$\mathit{MR}_2$};
+\node[state] (r3) [right = 2.5cm of r2]{\scriptsize$\mathit{MR}_3$};
+
+% First childs
+
+\node[substate] (c11) [below left  = 0.9 of r1]{};
+\node[substate] (c12) [below right = 0.9 of r1]{};
+\node[substate] (c21) [below left  = 0.9 of r2]{};
+\node[substate] (c22) [below right = 0.9 of r2]{};
+\node[substate] (c31) [below left  = 0.9 of r3]{};
+\node[substate] (c32) [below right = 0.9 of r3]{};
+
+% Second childs
+
+\node[substate] (c111) [below left  = 0.6 and 0.2 of c11]{};
+\node[substate] (c112) [below right = 0.6 and 0.2 of c11]{};
+\node[substate] (c121) [below left  = 0.6 and 0.2 of c12]{};
+\node[substate] (c122) [below right = 0.6 and 0.2 of c12]{};
+
+
+\node[substate] (c211) [below left  = 0.6 and 0.2 of c21]{};
+\node[substate] (c212) [below right = 0.6 and 0.2 of c21]{};
+\node[substate] (c221) [below left  = 0.6 and 0.2 of c22]{};
+\node[substate] (c222) [below right = 0.6 and 0.2 of c22]{};
+
+
+\node[substate] (c311) [below left  = 0.6 and 0.2 of c31]{};
+\node[substate] (c312) [below right = 0.6 and 0.2 of c31]{};
+\node[substate] (c321) [below left  = 0.6 and 0.2 of c32]{};
+\node[substate] (c322) [below right = 0.6 and 0.2 of c32]{};
+
+\node (etc11) [below = 0.9 of c11]{$\vdots$};
+\node (etc12) [below = 0.9 of c12]{$\vdots$};
+\node (etc21) [below = 0.9 of c21]{$\vdots$};
+\node (etc22) [below = 0.9 of c22]{$\vdots$};
+\node (etc31) [below = 0.9 of c31]{$\vdots$};
+\node (etc32) [below = 0.9 of c32]{$\vdots$};
+
+% Documents
+
+
+
+\path (r1) edge node {} (x1);
+\path (r2) edge node {} (x2);
+\path (r3) edge node {} (x3);
+\path (r3) edge node {} (x3);
+
+\path (x1) edge node {} (x2);
+\path (x2) edge node {} (x3);
+\path (x3) edge node {} (etc);
+
+\path (c11) edge node {} (r1);
+\path (c12) edge node {} (r1);
+\path (c21) edge node {} (r2);
+\path (c22) edge node {} (r2);
+\path (c31) edge node {} (r3);
+\path (c32) edge node {} (r3);
+
+\path (c111) edge node {} (c11);
+\path (c112) edge node {} (c11);
+\path (c121) edge node {} (c12);
+\path (c122) edge node {} (c12);
+
+\path (c211) edge node {} (c21);
+\path (c212) edge node {} (c21);
+\path (c221) edge node {} (c22);
+\path (c222) edge node {} (c22);
+
+\path (c311) edge node {} (c31);
+\path (c312) edge node {} (c31);
+\path (c321) edge node {} (c32);
+\path (c322) edge node {} (c32);
+
+
+
+\end{tikzpicture}
+\caption{In addition to the broadcast of single documents and the Merkle root, the hash list $[x_1,x_2,\dots]$ is published element-wise to a well established blockchain. Anyone having access to a single path in a tree and the previous day hash can verify the integrity of the whole tree.}
+
+\end{figure}
+
 
 \domagoj{This can be further implemented using a smart contract ME IMAGINO QUE SI??? ESCRIBAN DETALLES DE STEALA HASH AQUI.}
 
 \domagoj{IF MONITORING ORGANIZATIONS ARE WELL ESTABLISHED MAYBE MOVE TO A N OUT OF M SIGNATURE TO COMMIT/OR AN ADDITIONAL TRANSACTION THEY PUBLISH WITH N OUT OF M SIGNATURES TO VERIFY THE DAY'S DATA?}\francisco{Or they could actually sign the same contract as the government}
 
+In fact, the only blockchain-related technological need for this is a tool that lets an authorized party to daily publish one short string in a respected blockchain (typically, the signed output of a SHA-256 or BLAKE2 computation into Ethereum or Bitcoin blockchains). This is simple and of negligeable cost. We have witnessed some initiatives aiming to do this since the early years of Bitcoin, but we have yet to see one that is appropriate for government use. Some of them are vulnerable to the well-known length-extension attacks, most of them do not support cryptographic signatures on published hashes, and almost all of them charge the user a large, arbitrary amount for this relatively simple service. 
+
+\francisco{I think this section should include Martin's guarants or guards. Or maybe a separate section on it would be better.}
