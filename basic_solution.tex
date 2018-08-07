@@ -24,76 +24,77 @@ The output of a hash function is called simply a hash, or a hash value. Notice t
 Let $h$ be a fixed cryptographic hash function. A hash list is an ordered list of data $[d_1,d_2,\dots, d_k]$ such that every element of the list contains the hash value of the previous element, \ie $h(d_1)\in d_2$. In a hash list, modifying the hash value of an element affects the hash values of all succesive nodes, and because of the second preimage resistant of $h$, it is unfeasible to replace an element of the list without having to update the list. Therefore, if the last value of the list is permanently monitored, there is virtually no way of modifying an element of the list while keeping the structure of hash list and not being detected. This is one of the core ideas behind Bitcoin's protocol \cite{whitepaper}, but it has been used widely in a number of precedent applications. \francisco{An actual example from chilean banks follows. Sometimes a PRNG instead of a hash function is used, but it still applies. If you think this example doesn't add to the discussion, just remove it.} For instance, to add an extra layer of security on transactions, some banks provide users small, offline devices that can store one 256-bit value $x$ and show the first six digits of $x$ to the user. Every four or five minutes, the device replaces $x$ with $h(x)$ for some (assumed public) hash function $h$. When a user is about to validate a transaction, the bank asks the six digits visible to the user, which proves possession of the said device with good probability. However, if an attacker knowing $h$ extracts the whole number once (or even only a sufficent amount of bits), they can predict all subsequent values displayed at the device, and successfully pass tests. This is why, in most scenarios, a hash list needs some source of randomness or interaction with some environment in order to be unpredictable.
 
 \begin{figure}
-\label{hashlist}
+\resizebox{\columnwidth}{!}{
 \centering
 \begin {tikzpicture}[-latex ,auto ,node distance =1 cm and 1.8cm ,on grid, semithick, state/.style ={ rectangle , draw, minimum width =0.9 cm}]
-\node[state] (0) {$d_0$};
-\node[state] (1) [right =of 0] {$d_1$};
-\node[state] (2) [right =of 1] {$d_2$};
-\node[state] (3) [right =of 2] {$d_3$};
+\node[state] (0) {\begin{tabular}{c} $\bot$ \\ $d_1$ \end{tabular}};
+\node[state] (1) [right =2.2cm of 0] {\begin{tabular}{c} $h(B_1)$ \\ $d_2$ \end{tabular}};
+\node[state] (2) [right =2.5cm of 1] {\begin{tabular}{c} $h(B_2)$ \\ $d_3$ \end{tabular}};
+\node[state] (3) [right =2.5cm of 2] {\begin{tabular}{c} $h(B_3)$ \\ $d_4$ \end{tabular}};
 \node (etc) [right =of 3] {};
 
-\node (1d) [above =of 1]{\small data};
-\node (2d) [above =of 2]{\small data};
-\node (3d) [above =of 3]{\small data};
+\node (1d) [above =20pt of 0]{$B_1$};
+\node (2d) [above =20pt of 1]{$B_2$};
+\node (3d) [above =20pt of 2]{$B_3$};
+\node (4d) [above =20pt of 3]{$B_4$};
 
-\path (0) edge [bend left = 0] node[below]{$h$}(1);
-\path (1) edge [bend left = 0] node[below]{$h$}(2);
-\path (2) edge [bend left = 0] node[below]{$h$}(3);
-\path (3) edge [bend left = 0] node[below]{...}(etc);
+\path (1) edge (0);
+\path (2) edge (1);
+\path (3) edge (2);
+\path (etc) edge [bend left = 0] node[below]{...}(3);
 
-\path (1d) edge [bend left = 0] (1);
-\path (2d) edge [bend left = 0] (2);
-\path (3d) edge [bend left = 0] (3);
+%\path (1d) edge [bend left = 0] (1);
+%\path (2d) edge [bend left = 0] (2);
+%\path (3d) edge [bend left = 0] (3);
 
 \end{tikzpicture}
-\caption{A hash list. A secure hash algorithm $h$ is used, and external data prevents predictability.}
+}
+\caption{A hash list. A secure hash algorithm $h$ is used, and external data prevents predictability. Here we use $\bot$ to denote the default value used as the previous hash in the first block.}
+\label{hashlist}
 \end{figure}
 
 A Merkle tree is a data structure that displays one hash value linked to a set of documents, such that any modification on the underlying documents affects this global hash, called the Merkle root. In addition, any change on the Merkle root can be efficiently traced to the documents causing it. As a result, commiting to a Merkle root obliges to commit to all documents included in the tree, which can be arbitrarily many. To show that one particular document is in the Merkle tree, one needs to provide a valid hash list starting from the hash of this document and whose last element is the Merkle root: a path. Note that the cryptographic properties of hash functions ensure that Merkle trees have DAG structure. The standard construction of Merkle trees is displayed on figure \ref{merkle_fig}.
 
 \begin{figure}
-\label{merkle_fig}
+\resizebox{\columnwidth}{!}{
 \centering
 \begin {tikzpicture}[-latex ,auto ,node distance =1 cm and 1.8cm ,on grid, semithick, state/.style ={ rectangle , draw, minimum width =0.9 cm}]
 % First floor 
 \node[state] (d1) {$d_1$};
-\node[state] (d2) [right =of d1] {$d_2$};
-\node[state] (d3) [right =of d2] {$d_3$};
-\node[state] (d4) [right =of d3] {$d_4$};
+\node[state] (d2) [right =3cm of d1] {$d_2$};
+\node[state] (d3) [right =3cm of d2] {$d_3$};
+\node[state] (d4) [right =3cm of d3] {$d_4$};
 % Second floor
-\node[state] (h1) [above =of d1] {$x_1$};
-\node[state] (h2) [above =of d2] {$x_2$};
-\node[state] (h3) [above =of d3] {$x_3$};
-\node[state] (h4) [above =of d4] {$x_4$};
+\node[state] (h1) [above =1.25 of d1] {$x_1=h(d_1)$};
+\node[state] (h2) [above =1.25 of d2] {$x_2=h(d_2)$};
+\node[state] (h3) [above =1.25 of d3] {$x_3=h(d_3)$};
+\node[state] (h4) [above =1.25 of d4] {$x_4=h(d_4)$};
 % Third floor
-\node[state] (h12) [above right =1.25 of h1] {$h(x_1 || x_2)$};
-\node[state] (h34) [above right =1.25 of h3] {$h(x_3 || x_4)$};
+\node[state] (h12) [above right =1.25 and 1.5 of h1] {$h(x_1 || x_2)$};
+\node[state] (h34) [above right =1.25 and 1.5  of h3] {$h(x_3 || x_4)$};
 % Root
-\node[state] (root) [above right =of h12] {\small Root};
+\node[state] (root) [above right =1.25 and 3 of h12] {\small Root};
 
 % First floor paths
-\path (d1) edge node[left]{$h$}(h1);
-\path (d2) edge node[left]{$h$}(h2);
-\path (d3) edge node[left]{$h$}(h3);
-\path (d4) edge node[left]{$h$}(h4);
+\path (h1) edge node[left]{}(d1);
+\path (h2) edge node[left]{}(d2);
+\path (h3) edge node[left]{}(d3);
+\path (h4) edge node[left]{}(d4);
 
 % Second floor paths
-\path (h1) edge node{} (h12);
-\path (h2) edge node{} (h12);
-\path (h3) edge node{} (h34);
-\path (h4) edge node{} (h34);
+\path (h12) edge node{} (h1);
+\path (h12) edge node{} (h2);
+\path (h34) edge node{} (h3);
+\path (h34) edge node{} (h4);
 
 % Third floor paths
-\path (h12) edge node{} (root);
-\path (h34) edge node{} (root);
-
-
-
-
+\path (root) edge node{} (h12);
+\path (root) edge node{} (h34);
 
 \end{tikzpicture}
+}
 \caption{A Merkle tree with document list $[d_1,d_2,d_3,d_4]$ and secure hash function $h$. Here, the root contains the value $h(h(x_1||x_2)||h(x_3||h_4))$, depending on all previous nodes.}% In order to prove that $d_4$ is present on the tree, one needs to check the validity of the hash list $[x_4,h(x_3||x_4),\mathrm{root}]$ with knowledge of $x_3$ and $h(x_1||x_2)$ only.}
+\label{merkle_fig}
 \end{figure}
 
 \medskip
@@ -101,12 +102,17 @@ A Merkle tree is a data structure that displays one hash value linked to a set o
 
 As explained above, anyone who witnesses the root of this Merkle tree (representing typically less than 100 bytes of information), can check whether the data corresponding to that single day was modified by downloading it in the sequence provided by the government, hashing it, and assembling a Merkle tree starting from these hashes. If the Merkle root published by the government does not match the one computed using this method, the verifier can know for certain that the data had been manipulated. It is assumed that the government makes it public knowledge which hashing algorithm and Merkle tree assembly they will be using.
 
-Notice that if we want to be able to detect which particular documents were modified, we would have to store the entire Merkle tree. The size of this will be in tens of megabytes for a tree coding one million documents when using SHA-256 as the hash function, so one might argue that even this is a reasonable amount of storage needed to pinpoint which particular data had been manipulated. One can further restrict the amount of needed storage by storing fewer layers of the Merkle tree (\ie if one trims the original leaves the size will roughly half), but also losing the granularity at which manipulations can be detected. For instance, if we store the tree up to the next to last level, we can check if one of the two adjacent documents in the list $d_1,\ldots ,d_n$ have been modified, but will not be able to say which one (Figure \ref{fig-trim}). Based on the volume of the published data, the government might also wish to publish these partial trees and sign them, in order to make it easier for a person to store this information.
+Notice that if we want to be able to detect which particular documents were modified, we would have to store the entire Merkle tree. The size of this will be in tens of megabytes for a tree coding one million documents when using SHA-256 as the hash function, so one might argue that even this is a reasonable amount of storage needed to pinpoint which particular data had been manipulated. One can further restrict the amount of needed storage by storing fewer layers of the Merkle tree (\ie if one trims the original leaves the size will roughly half), but also losing the granularity at which manipulations can be detected. 
+%For instance, if we store the tree up to the next to last level, we can check if one of the two adjacent documents in the list $d_1,\ldots ,d_n$ have been modified, but will not be able to say which one (Figure \ref{fig-trim}). 
+For example, if we only store the root and its two children of the Merkle tree from Figure \ref{merkle_fig}, we can detect if there was a modification in the pair $d_1,d_2$, or the pair $d_3,d_4$, but we will not be able to say which of the two documents in the pair was modified.
+Based on the volume of the published data, the government might also wish to publish these partial trees and sign them, in order to make it easier for a person to store this information.
 
-It is possible to do better by utilizing the same idea that Bitcoin uses to store its blocks \cite{whitepaper}, and encode and/or publish the hash of the previous day's data in the current day's digest. That is, we can create a hash list of the Merkle trees roots published each day. This would mean that storing one day's Merkle tree would not only assure that the data of that particular day can not be manipulated, but also, it would assure that the data in any of the days previous to this one could not be manipulated.  Since each tree would also contain the hash value of the previous day's digest, one can simply follow this chain day after day, and see if any of the hash values do not match. This simple concept is illustrated in Figure \ref{fig-merkle-chain}.
+It is possible to do better by utilizing the same idea that Bitcoin uses to store its blocks \cite{whitepaper}, and encode and/or publish the hash of the previous day's data in the current day's digest. That is, we can create a hash list of the Merkle roots published each day. This would mean that storing one day's Merkle root (or the entire tree) would not only assure that the data of that particular day can not be manipulated, but also, it would assure that the data in any of the days previous to this one could not be manipulated. Since each tree would also contain the hash value of the previous day's digest, one can simply follow this chain day after day, and see if any of the hash values do not match. 
+This simple concept is illustrated in Figure \ref{fig-merkle-chain}. Notice that there are two structures that are connected here. On the bottom level, we have the Merkle tree constructed from the day's documents. The top level hash list is then constructed using the day's Merkle root as its data. That is, each element of this hash list contains the Merkle root of the current day, plus the hash value of the previous day's element. 
+
+To summarize: in this approach, apart from the each day's data, the government would also publish the Merkle tree whose leaves are the hashes of the day's documents, plus a hash list built from the roots of these Merkle trees. In turn, each element of this list will contain the day's Merkle root as its data, plus the hash of the (entire) previous element in the list.
 
 \begin{figure}
-\label{fig-merkle-chain}
 \centering
 \begin {tikzpicture}[-latex ,auto ,node distance =1 cm and 2.5 cm ,on grid, semithick, state/.style ={ rectangle , draw, minimum width =0.9 cm}, substate/.style ={ rectangle , draw, minimum width =0.2 cm}]
 
@@ -114,15 +120,28 @@ It is possible to do better by utilizing the same idea that Bitcoin uses to stor
 
 
 \usetikzlibrary{shapes}
-\node[state] (x1) {$x_1$};
-\node[state] (x2) [right = 2.7cm of x1]{$x_2$};
-\node[state] (x3) [right = 2.5cm of x2]{$x_3$};
-\node (etc) [right = 1.8cm of x3]{...};
+\node (x1) {};
+\node (x2) [right = 2.7cm of x1]{};
+\node (x3) [right = 2.7cm of x2]{};
+\node (etc) [right = 1.8cm of x3]{};
 
 
 \node[state] (r1) [below =of x1]{\scriptsize$\mathit{MR}_1$};
+\draw [draw=black!50] ($(r1.south west) - (0.4,0.1cm)$) rectangle +(1.75cm, +1.2cm);
+\node (h1) [above =15pt of r1]{$\bot$};
+\node (bl1) [above =30pt of r1]{$B_1$};
+
 \node[state] (r2) [right = 2.7 cm of r1]{\scriptsize$\mathit{MR}_2$};
-\node[state] (r3) [right = 2.5cm of r2]{\scriptsize$\mathit{MR}_3$};
+\draw [draw=black!50] ($(r2.south west) - (0.4,0.1cm)$) rectangle +(1.75cm, +1.2cm);
+\node (h2) [above =15pt of r2]{$h(B_1)$};
+\node (bl2) [above =30pt of r2]{$B_2$};
+
+
+\node[state] (r3) [right = 2.7cm of r2]{\scriptsize$\mathit{MR}_3$};
+\draw [draw=black!50] ($(r3.south west) - (0.4,0.1cm)$) rectangle +(1.75cm, +1.2cm);
+\node (h3) [above =15pt of r3]{$h(B_2)$};
+\node (bl3) [above =30pt of r3]{$B_3$};
+
 
 % First childs
 
@@ -181,48 +200,56 @@ It is possible to do better by utilizing the same idea that Bitcoin uses to stor
 
 
 
-\path (r1) edge node {} (x1);
-\path (r2) edge node {} (x2);
-\path (r3) edge node {} (x3);
-\path (r3) edge node {} (x3);
+%\path (r1) edge node {} (x1);
+%\path (r2) edge node {} (x2);
+%\path (r3) edge node {} (x3);
+%\path (r3) edge node {} (x3);
 
-\path (x1) edge node {} (x2);
-\path (x2) edge node {} (x3);
-\path (x3) edge node {} (etc);
+%\path (x1) edge node {} (x2);
+%\path (x2) edge node {} (x3);
+%\path (x3) edge node {} (etc);
 
-\path (c11) edge node {} (r1);
-\path (c12) edge node {} (r1);
-\path (c21) edge node {} (r2);
-\path (c22) edge node {} (r2);
-\path (c31) edge node {} (r3);
-\path (c32) edge node {} (r3);
+\path (r1) edge node {} (c11);
+\path (r1) edge node {} (c12);
+\path (r2) edge node {} (c21);
+\path (r2) edge node {} (c22);
+\path (r3) edge node {} (c31);
+\path (r3) edge node {} (c32);
 
-\path (c111) edge node {} (c11);
-\path (c112) edge node {} (c11);
-\path (c121) edge node {} (c12);
-\path (c122) edge node {} (c12);
+\path (c11) edge node {} (c111);
+\path (c11) edge node {} (c112);
+\path (c12) edge node {} (c121);
+\path (c12) edge node {} (c122);
 
-\path (c211) edge node {} (c21);
-\path (c212) edge node {} (c21);
-\path (c221) edge node {} (c22);
-\path (c222) edge node {} (c22);
+\path (c21) edge node {} (c211);
+\path (c21) edge node {} (c212);
+\path (c22) edge node {} (c221);
+\path (c22) edge node {} (c222);
 
-\path (c311) edge node {} (c31);
-\path (c312) edge node {} (c31);
-\path (c321) edge node {} (c32);
-\path (c322) edge node {} (c32);
+\path (c31) edge node {} (c311);
+\path (c31) edge node {} (c312);
+\path (c32) edge node {} (c321);
+\path (c32) edge node {} (c322);
 
-\path (d1) edge node {} (ghost1);
-\path (d2) edge node {} (ghost1);
-\path (d3) edge node {} (ghost2);
-\path (d4) edge node {} (ghost2);
-\path (d6) edge node {} (ghost3);
+\path (ghost1) edge node {} (d1);
+\path (ghost1) edge node {} (d2);
+\path (ghost2) edge node {} (d3);
+\path (ghost2) edge node {} (d4);
+\path (ghost3) edge node {} (d6);
+
+\node (ar1) [above right = 10pt and 0.77cm of r1] {};
+\node (ar2) [above right = 10pt and 1.95cm of r1] {};
+\node (ar3) [above right = 10pt and 3.47cm of r1] {};
+\node (ar4) [above right = 10pt and 4.65cm of r1] {};
+
+\path (ar2) edge node {} (ar1);
+\path (ar4) edge node {} (ar3);
 
 
 
 \end{tikzpicture}
-\caption{Each day, a Merkle tree is constructed using that day's published documents $d_1,d_2,\dots, d_k$. The root of this tree is then hashed along with the hash value of the previous day, and the output value is broadcast along with the published documents. The result is a monitorable hash list $[x_1,x_2,\dots]$.}
-
+\caption{Each day, a Merkle tree is constructed using that day's published documents $d_1,d_2,\dots, d_k$. The root of this tree is then hashed along with the hash value of the previous day, and the output value is broadcast along with the published documents. The result is a monitorable hash list $[B_1,B_2,\dots]$.}
+\label{fig-merkle-chain}
 \end{figure}
 
 
