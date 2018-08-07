@@ -1,23 +1,23 @@
 pragma solidity ^0.4.18;
 
-contract StelaHash{
+contract GovChain{
 
 	mapping (bytes32 => bytes32) public roots;
 	mapping (bytes32 => bytes32) public blocks_chain;
     mapping (bytes32 => uint) public timestamps;
     bytes32 public last_block_hash;
-    address pubic publisher_address;
+    address public publisher_address;
 
-	function StelaHash() public {
+	function GovChain() public {
         publisher_address = msg.sender;
         last_block_hash = 1;
     }
 
 	function add_root(bytes32 merkle_root) public {
-        assert(block.timestamp - timestamps[last_block_hash] > 20 * 3600000);
-		assert(msg.sender == publisher_address);
-        // Concatenate the previous block's hash and the new Merkle root.
-        new_block_hash = sha256(last_block_hash * 2 ** 32 + merkle_root);
+        assert(msg.sender == publisher_address);
+        assert(block.timestamp - timestamps[last_block_hash] > 20 * 3600000);        
+		// Concatenate the previous block's hash and the new Merkle root.
+        bytes32 new_block_hash = sha256(last_block_hash * 2 ** 32 + merkle_root);
        	assert(roots[new_block_hash] != 0);
         roots[new_block_hash] = merkle_root;
         blocks_chain[new_block_hash] = last_block_hash;

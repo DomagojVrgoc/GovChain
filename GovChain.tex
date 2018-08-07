@@ -9,7 +9,9 @@
 \usepackage{xcolor}
 \usepackage{url}
 \usepackage{tikz}
-\usetikzlibrary{positioning}
+\usetikzlibrary{positioning,calc}
+
+\usepackage{listings}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -65,9 +67,9 @@ dvrgoc@ing.puc.cl}
 \maketitle
 
 \begin{abstract}
-Open government data is a valid effort on the part of leading world governments to make the democratic process more transparent. However, the sheer volume of the data makes it infeasible for a member of the general public to guard this information in order to assure that it is not manipulated by a malignant agent, or by the government itself.
+Open government data is a valid effort on the part of leading world governments to make the democratic process more transparent. However, the sheer volume of the data makes it infeasible for a member of the general public to guard this information in order to assure that it is not manipulated by a malignant agent, maybe the government itself.
 
-In this short report we describe the main ideas behind a platform that enables government data to be verifiably secure and immutable. We start with a simple hash-list based structure to ensure immutability, peg its security to that of an existing blockchain enabling smart contracts, and then dwell into more delicate issues of how to deal with updating the government records, manage sensitive or secret data, and assure a simple way for a member of the general public to verify a history of a specific document.
+In this short report we describe the main ideas behind a platform that enables government data to be verifiably secure and immutable. We start with a simple hash-list based structure to ensure immutability, peg its security to that of an existing blockchain enabling smart contracts. Then we dwell into more delicate issues of how to deal with updating the government records, manage sensitive or secret data, and assure a simple way for a member of the general public to verify a history of a specific document.
 \end{abstract}
 
 \begin{IEEEkeywords}
