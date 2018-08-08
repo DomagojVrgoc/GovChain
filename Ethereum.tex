@@ -1,29 +1,23 @@
 % !TEX root = GovChain.tex
 
+The idea of having many different organizations backing up the Merkle trees published by the government works well, however it is still a solution suffering from some weaknesses. For instance, when there are very few such organizations, or individuals willing to guard (a portion of) the security certificates needed to verify the correctness of the data, they could be easily subverted, or give little additional credibility. Overall, one might argue that this solution is easily susceptible to corruption, since the participating organizations do not have any (material) gain from doing their duty correctly. Moreover, a malicious government agent might be able to bribe the participating organizations or just change the data as needed and persecute anyone trying to disclose the truth.
+%to change the (Merkle tree and blockchain) data as needed, pretending that it was correct from the start. %Notice that individuals who guarded (a part of) the security certificates, would have even less power in this case, since there is more trust in established organizations, than in individuals.
 
-The idea of having many different organizations backing up the Merkle trees published by the government works well, however, it is still a solution suffering from some weaknesses. For instance, when there are very few such organizations, or individuals willing to guard (a portion of) the security certificates needed to verify the correctness of the data, they could be easily subverted, or give little additional credibility. Overall, one might argue that this solution is easily susceptible to corruption, since the participating organizations do not have any (material) gain from doing their duty correctly. Namely, a malicious government agent might be able to bribe the participating organizations to change the (Merkle tree and hash list) data as needed, pretending that it was correct from the start. %Notice that individuals who guarded (a part of) the security certificates, would have even less power in this case, since there is more trust in established organizations, than in individuals.
-
-
-The solution to this problem is quite simple: publish the top level hash list from Figure \ref{fig-merkle-chain} announced by the government on a well established public blokchain. That is, in addition to the government and the monitoring agencies publishing this data on their web pages, each day's Merkle root, together with the hash of the previous element of this list, is sent to a public blockchain. In case that the blockhcain used is sufficiently economically powerful, as Bitcoin or Ethereum are these days, it is highly unlikely that a malicious agent can subvert the entire blockchain to change the data once it has been published. In this solution, the government, in addition to publishing the actual data, the corresponding Merkle tree, and the hash list containing Merkle roots, also commits a {\em single} signed transaction to e.g. Ethereum's blockchain, backing up the hash list of Merkle roots (see Figure \ref{fig-merkle-blockchain}).
+The solution to this problem is quite simple: publish the top level block from Figure \ref{fig-merkle-chain} announced by the government on a well established public blokchain. That is, in addition to the government and the monitoring agencies publishing this data on their web pages, each day's block is sent to a public blockchain. In case that the blockhcain used is sufficiently secure, as Bitcoin or Ethereum are these days, it is practically unfeasible to change the data once it has been published. In this solution the government, in addition to publishing the actual data, also commits a {\em single} signed transaction to e.g. Ethereum's blockchain, backing up the blockchain of Merkle roots (see Figure \ref{fig-merkle-blockchain}).
 % containing the hash value of the Merkle root, hashed together with the hash value of previous day's data.
 
-This amounts to the most lightweight solution proposed in Section \ref{sec:basic}, where only the root is monitored. While this does not allows to trace which particular document was modified, it does allow to check whether a day's data was manipulated. The restriction that a single transaction is published per day is there to ensure that  the government commits to a particular view of the data for a single day. This way, it is straightforward to locate the entire history on the blockchain by looking for transactions corresponding to the government's public key, and guarding the hash values these transactions commit to. Notice that this solution is quite lightweight for the blockchain it is published on since it commits a single transaction per day, and can also be implemented in a fairly economical way.
-
+This amounts to the most lightweight solution proposed in Section \ref{sec:basic}, where only the root is monitored. While this does not allow to trace modifications, it does allow to verify proofs for valid documents. In other words, one can generate a certificate to convince anyone that a document was indeed published in a particular day. The restriction that a single transaction is published per day is there to ensure that the government commits to a particular view of the data for a single day. This way, it is straightforward to locate the entire history on the blockchain by looking at the information stored in the corresponding smart contract, and guarding the hash values these transactions commit to. This solution is extremely lightweight for the Ethereum network (which makes it very cheap) while allowing to audit a government publishing an arbitrarily large number of documents per day.
 
 \begin{figure}
 %\label{fig-merkle-blockchain}
 \centering
 \begin {tikzpicture}[-latex ,auto ,node distance =1 cm and 2.5 cm ,on grid, semithick, state/.style ={ rectangle , draw, minimum width =0.9 cm}, substate/.style ={ rectangle , draw, minimum width =0.2 cm}]
 
-
-
-
 \usetikzlibrary{shapes}
 \node (x1) {};
 \node (x2) [right = 2.7cm of x1]{};
 \node (x3) [right = 2.7cm of x2]{};
 \node (etc) [right = 1.8cm of x3]{};
-
 
 \node[state] (r1) [below =of x1]{\scriptsize$\mathit{MR}_1$};
 \draw [draw=black!50] ($(r1.south west) - (0.4,0.1cm)$) rectangle +(1.75cm, +1.2cm);
@@ -35,19 +29,16 @@ This amounts to the most lightweight solution proposed in Section \ref{sec:basic
 \node (h2) [above =15pt of r2]{$h(B_1)$};
 \node (bl2) [above =30pt of r2]{$B_2$};
 
-\node[style={ellipse}] (BC) [above =2.5cm  of r3] {Blockchain};
+\node[style={ellipse}] (BC) [above =2.5cm  of r3] {Ethereum};
 
 \path (bl1) edge[dotted, bend left=25] node {} (BC);
 \path (bl2) edge[dotted, bend left=25] node {} (BC);
 \path (bl3) edge[dotted, bend right=25] node {} (BC);
 
-
-
 \node[state] (r3) [right = 2.7cm of r2]{\scriptsize$\mathit{MR}_3$};
 \draw [draw=black!50] ($(r3.south west) - (0.4,0.1cm)$) rectangle +(1.75cm, +1.2cm);
 \node (h3) [above =15pt of r3]{$h(B_2)$};
 \node (bl3) [above =30pt of r3]{$B_3$};
-
 
 % First childs
 
@@ -65,12 +56,10 @@ This amounts to the most lightweight solution proposed in Section \ref{sec:basic
 \node[substate] (c121) [below left  = 0.6 and 0.2 of c12]{};
 \node[substate] (c122) [below right = 0.6 and 0.2 of c12]{};
 
-
 \node[substate] (c211) [below left  = 0.6 and 0.2 of c21]{};
 \node[substate] (c212) [below right = 0.6 and 0.2 of c21]{};
 \node[substate] (c221) [below left  = 0.6 and 0.2 of c22]{};
 \node[substate] (c222) [below right = 0.6 and 0.2 of c22]{};
-
 
 \node[substate] (c311) [below left  = 0.6 and 0.2 of c31]{};
 \node[substate] (c312) [below right = 0.6 and 0.2 of c31]{};
@@ -94,17 +83,12 @@ This amounts to the most lightweight solution proposed in Section \ref{sec:basic
 \node (ghost2) [right = 1 of ghost1]{};
 \node (ghost3) [right = 1 of ghost2]{};
 
-
-
 \node (d1) [below left  = 0.8 and 0.3 of ghost1]{$d_1$};
 \node (d2) [right = 0.5 of d1]{$d_2$};
 \node (d3) [below left  = 0.8 and 0.25 of ghost2]{$d_3$};
 \node (d4) [right = 0.5 of d3]{$d_4$};
 \node (d5) [right = 0.5 of d4]{...};
 \node (d6) [right = 0.5 of d5]{$d_k$};
-
-
-
 
 %\path (r1) edge node {} (x1);
 %\path (r2) edge node {} (x2);
@@ -151,10 +135,8 @@ This amounts to the most lightweight solution proposed in Section \ref{sec:basic
 \path (ar2) edge node {} (ar1);
 \path (ar4) edge node {} (ar3);
 
-
-
 \end{tikzpicture}
-\caption{In addition to the broadcast of single documents and the Merkle root, the hash list $[B_1,B_2,\dots]$ is published element-wise to a well established blockchain. Anyone having access to a single path in a tree and the previous day hash can verify the integrity of the whole tree.}
+\caption{In addition to the broadcast of single documents and the Merkle root, the blockchain $[B_1,B_2,\dots]$ is published element-wise to a well established blockchain. Anyone having access to a single path in a tree and the previous day hash can verify the integrity of the whole tree.}
 \label{fig-merkle-blockchain}
 \end{figure}
 
@@ -186,7 +168,7 @@ contract GovChain{
         // Check that the sender is correct
         assert(msg.sender == publisher_address);
         // Check the elapsed time is at least 20 hours
-        assert(block.timestamp - timestamps[last_block_hash] > 20 * 3600000);        
+        assert(block.timestamp - timestamps[last_block_hash] > 72000);        
         // Hash the concatenation of the previous block's hash and the new Merkle root
         bytes32 new_block_hash = sha256(last_block_hash, merkle_root);
         // Check that this hash has not been uploaded before.
@@ -199,19 +181,20 @@ contract GovChain{
 }
 
 \end{lstlisting}
-\caption{Solidity code for backing up the top level hash list of Figure \ref{fig-merkle-chain} on Ethereum's blockchain. Note that the code itself constructs the hash list, thus giving additional credibility to the hash list published by the government.}
+\caption{Solidity code for backing up the top level blocks of Figure \ref{fig-merkle-chain} on Ethereum's blockchain. Note that the code itself constructs the blockchain, thus giving additional credibility to the blockchain published by the government.}
 \label{contract}
 \end{figure*}
 
-To make things concrete, we next illustrate how this can be achieved in Ethereum. In Figure \ref{contract} we give a Solidity contract that allows to publish the hash list of Merkle roots in a secure way. Solidity \cite{Solidity} is a high level language for describing smart contracts to be executed on Ethereum's virtual machine. A contract is executed by paying miners to run the contract and guard its data on the blockchain. The contract we present is to be executed by the government publishing the data, and they will be the only Ethereum user able to execute the contract. This is assured by guarding the contract publisher's address (in form of their public key) and checking that it is this particular address executing the contract (lines 9, 12 and 18 in Figure \ref{contract}). The contract itself guards the hash list of each day's Merkle roots, plus the time they were published. For this we maintain a mapping (i.e. a dictionary) \texttt{roots} containing the roots themselves, a mapping \texttt{blocks\_chain} containing the hash value of the previous element of the hash list (e.g. $h(B_2)$ in $B_3$ of Figure \ref{fig-merkle-chain}), as well as the mapping \texttt{timestamps} that tells us the time each Merkle root was published. We also store the hash value of the ultimate block in the variable \texttt{last\_block\_hash}.
+To make things concrete, we next illustrate how this can be achieved in Ethereum. In Figure \ref{contract} we give a Solidity contract for publishing the blockchain of Merkle roots in a secure way. Solidity \cite{Solidity} is a high level language for describing smart contracts that is then compiled to be executed on Ethereum's virtual machine. The contract we present is to be called by the government publishing the data, and they will be the only ones able to execute the contract (assuming their private key does not get compromized). This is assured by guarding the contract publisher's address (in form of their public key) when the contract is deployed (line 12 of Figure~\ref{contract}), and then checking that it is this particular address calling the contract to upload new values (lines 9, 12 and 18). The contract itself guards the data corresponding to the block of each day, plus the time they were published. For this we maintain a mapping (i.e. a dictionary) \texttt{roots} linking the hash of each block to the corresponding Merkle root, a mapping \texttt{blocks\_chain} linking the hash of each block to the hash of the previous block of the blockchain (e.g. $h(B_2)$ in $B_3$ of Figure \ref{fig-merkle-chain}), as well as a mapping \texttt{timestamps} that tells us the time each block was published. We also store the hash value of the last block in the variable \texttt{last\_block\_hash}.
 
-The only function that the contract can execute is extending the list by a new Merkle root. This is achieved by the function \texttt{add\_root}, which takes the Merkle root value as the input and adds it to the hash list. Note that our contract allows this function to be executed only the publisher of the contract (line 18), and allows the blocks to be submitted at most once a day (in line 18 we require the new block to have a delay of at least 20 hours to allow some flexibility on when the day's data is published). If these verifications complete successfully, we then compute the hash value of the new element of our list (line 20), check it was not used before (line 21), and define its root value as the hash value received as the input to the function (line 22). We then also set the value of the previous element of the list in line 23, the timestamp in line 24, and update the value of the ultimate element of the list as this one in line 25.
+The only function that the contract can execute once deployed is for extending the list by a new Merkle root. This is achieved by the function \texttt{add\_root}, which takes the Merkle root value as the input and adds it to the blockchain. Note that our contract allows the blocks to be submitted at most once a day (in line 20 we require the new block to have a delay of at least 20 hours to allow some flexibility on when the day's data is published). If these verifications complete successfully, we then compute the hash value of the new element of our list (line 22), check it was not used before (line 24), and define its root value as the hash value received as input to the function (line 25). We then also set the value of the previous element of the list in line 23, the timestamp in line 24, and update the value of the ultimate element of the list as this one in line 25.
 
-Note that this contract can also serve as the verification that the hash list published by the government is indeed the correct one, as it recomputes its hash values (line 20 of the contract). This way, we have additional assurance that the government's data about the hash list is correct, since it is recomputed on Ethereum's blockchain, in addition to being published elsewhere.
+Note that this contract can also serve as the verification that the blockchain published by the government is indeed the correct one, as it recomputes its hash values (line 22 of the contract). This way, we have additional assurance that the government's data about the blockchain is correct, since it is recomputed on Ethereum's blockchain, in addition to being published elsewhere.
 
-Overall, publishing the data on Ethereum's blockchain using a contract presented in Figure \ref{contract} is a very efficient and lightweight solution. In particular, since submitting Merkle roots is limited to once daily, the cost of this contract will be very low (way below one dollar at the current Ethereum/dollar exchange rate), and does not heavily contribute to the congestion of Ethereum's network. Furthermore, having the value of any element of the published hash list allows us to access it for free by connecting to Ethereum nodes, and can provide us with the value of that day's Merkle root, date, and the hash value of the previous element of the list. This in turn allows us to download the days data, check its Merkle root equals the one we obtained from Ethereum's blockchain, and that the hash of the previous element of the list is indeed correct.
+Overall, publishing the data on Ethereum's blockchain using a contract presented in Figure~\ref{contract} is a very efficient and lightweight solution. In particular, since submitting Merkle roots is limited to one daily, the cost of this contract will be very low (way below one dollar per day at the current Ethereum/dollar exchange rate), and does not heavily contribute to the congestion of Ethereum's network. Furthermore, having the value of any element of the published blockchain allows us to access it for free by connecting to Ethereum nodes (or running one), and can provide us with the value of that day's Merkle root, date, and the hash value of the previous element of the list. This in turn allows us to obtain data directly from the government and, plus a succinct certificate that should also be provided by the government, verify that we are obtaining the correct information.
 
-Finally, notice that the idea of monitoring organizations presented in Section \ref{sec:basic} can now be further simplified, as they do not need to keep the entire top level hash list of Merkle roots any more, but can just occasionally download the hash value of the latest block on this list. Since the list itself is being guarded in the contract on the Ethereum's blockchain, looking up this value allows us to both check that it corresponds to the correct day's data (through the value of the mapping \texttt{timestamps}), that it matches the corresponding Merkle root, and includes the correct hash of the previous day's data. In essence, by committing to this smart contract, the government can not go back and change it's day digest in any way, and there can be no dispute on whether the Merkle root of the day's data provided by the government and the one in possession of a monitoring agency/person is different, modulo the security of Ethereum's blockchain.
+Finally, notice that the idea of monitoring organizations presented in Section \ref{sec:basic} can now be further simplified, as they do not need to keep the entire top level blockchain of Merkle roots any more, but can just occasionally download the hash value of the latest block on this list. Since the list itself is being guarded in the contract on the Ethereum's blockchain, looking up this value allows us to both check that it corresponds to the correct day's data (through the value of the mapping \texttt{timestamps}), that it matches the corresponding Merkle root, and includes the correct hash of the previous day's data. In essence, by committing to this smart contract, the government can not go back and change it's day digest in any way, and there can be no dispute on whether the Merkle root of the day's data provided by the government and the one in possession of a monitoring agency/person is different, modulo the security of Ethereum's blockchain.
+\martin{I highly disagree here. The use of monitoring organizations is now useless for storing what is already stored in the smart contract. However, it is still (very) relevant for on-line verification that the government is doing everything correctly and for storing all of the data in case the government refutes to provide a certificate. Also, these organizations should provide anti-certificates in case the government says something incorrect.}
 
 %\domagoj{This can be further implemented using a smart contract ME IMAGINO QUE SI??? ESCRIBAN DETALLES DE STEALA HASH AQUI.}
 %
