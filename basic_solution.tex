@@ -11,11 +11,11 @@ In this section we describe a basic infrastructure for publishing government dat
 \end{itemize}
 The signature protocol is required to be sound. This means that it verifies correctly, in the sense that $\verify(\pk,m,\sign(\sk,m))$ is always true, and that signatures are unforgeable without the secret key $\sk$. There are many digital signature schemes currently in use, for more details we refer the reader to \cite{KatzLindell2014}. We also point out that a large number of governments have adopted digital signatures as standard, mandatory procedures.
 
-The second primitive we recall is that of {\em cryptographic hash functions}. Roughly speaking, a cryptographic hash function is any function $h$ that takes as input an arbitrary sized document, and produces a fixed size output, can be efficiently computable, and satisfies the following two properties:
+The second primitive we recall is that of {\em cryptographic hash functions}. Roughly speaking, a cryptographic hash function is any function $h$ that takes as input an arbitrary sized document, and produces a fixed size output, can be efficiently computable, and satisfies the following three properties:
 \begin{itemize}
 \item {\em Hiding.} For any given input $x$, it is infeasible to compute $x$ with knowledge of $h(x)$ only.\footnote{Strictly speaking, this also includes a random number $r$ coming from a distribution with high min-entropy, and being given $h(r||x)$ instead of $h(x)$.}
 \item {\em Second preimage resistance.} Given input $x_1$, it is unfeasible to find a different input $x_2$ satisfying $h(x_1)=h(x_2)$.
-%\item {\em Collision resistance.} It is infeasible to efficiently find two different inputs $x$ and $y$, such that $h(x)=h(y)$.
+\item {\em Collision resistance.} It is infeasible to efficiently find two different inputs $x$ and $y$, such that $h(x)=h(y)$.
 \end{itemize}
 The output of a hash function is called a digest, a hash value or simply a hash. Notice that the hiding property of the hash function allows us to use $h(x)$ as a secure digest of our document $x$, since we can not reconstruct $x$ from $h(x)$ alone, and the value $h(x)$ is of fixed size.
 %\francisco{This is true but lacks some important properties of a secure encryption, maybe change the word encryption here?}. 
